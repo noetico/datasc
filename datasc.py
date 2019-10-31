@@ -327,6 +327,30 @@ def processmean():
                 if(asktowrite == 'y'):
                     filewrite = open(opts.extfile, 'a+')
                     filewrite.write("Bottom {0} rows: {1} \n\n" .format(sel, sortmin.head(int(sel))))
+                #Find outliers
+                std_data = np.std(dat)
+                data_mean = np.mean(dat)
+                outlier_mark_off = std_data * 3 #multiply standard dev by 3 to cater for outlier
+                outlier_lower = data_mean - outlier_mark_off
+                outlier_upper = data_mean + outlier_mark_off
+                outlier_list_upper = []
+                outlier_list_lower = []
+
+                for outlier in dat:
+                    if outlier > outlier_upper:
+                        outlier_list_upper.append(df.loc[df[selcol] == outlier])
+                        
+                    
+                    if outlier < outlier_lower:
+                        outlier_list_lower.append(df.loc[df[selcol] == outlier])
+                        
+                if(asktowrite == 'y'):
+                            filewrite = open(opts.extfile, 'a+')
+                            filewrite.write("Outlier Found (High Anomally):  {0} \n\n" .format(outlier_list_upper))
+                            filewrite.write("Outlier Found (Low Anomally):  {0} \n\n" .format(outlier_list_lower))
+
+                print("Outlier Found (High Anomally):  {0} \n\n" .format(outlier_list_upper))
+                print("Outlier Found (Low Anomally):  {0} \n\n" .format(outlier_list_lower))
                
                 if(asktowrite == 'y'):
                     filewrite = open(opts.extfile, 'a+')
